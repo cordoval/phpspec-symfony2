@@ -21,14 +21,24 @@
  */
 namespace PHPSpec\Context\Zend;
 
-use \Zend_Test_PHPUnit_ControllerTestCase as ZendControllerTest,
-    \Zend_Application as ZendApplication;
+use \Zend_Test_PHPUnit_ControllerTestCase as ZendControllerTest;
 
+/**
+ * @category   PHPSpec
+ * @package    PHPSpec_Zend
+ * @copyright  Copyright (c) 2007-2009 Pádraic Brady, Travis Swicegood
+ * @copyright  Copyright (c) 2010-2011 Pádraic Brady, Travis Swicegood,
+ *                                     Marcello Duarte
+ * @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public Licence Version 3
+ */
 class ZendTest extends ZendControllerTest
 {
+    /**
+     * Creates a Zend_Application object into the bootstrap property
+     */
     public function __construct()
     {
-        $this->bootstrap = new ZendApplication(
+        $this->bootstrap = new \Zend_Application(
             APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
         parent::setUp();
     }

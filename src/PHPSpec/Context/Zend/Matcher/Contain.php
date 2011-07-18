@@ -22,6 +22,8 @@
  */
 namespace PHPSpec\Context\Zend\Matcher;
 
+require_once 'PHPUnit/Autoload.php';
+
 /**
  * @see \PHPSpec\Matcher
  */
@@ -35,7 +37,7 @@ use \PHPSpec\Matcher;
  *                                     Marcello Duarte
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public Licence Version 3
  */
-class Redirect implements Matcher
+class Contain implements Matcher
 {
     /**
      * 
@@ -45,22 +47,25 @@ class Redirect implements Matcher
     {
         $this->_expected = $expected;
     }
-
+    
     /**
-     * Checks whether actual value is true
+     * Checks whether value is somewhere in the body
      * 
      * @param Response $response
      * @return boolean
      */
-    public function matches($response)
+    public function matches($actual)
     {
-        $constraint = new \Zend_Test_PHPUnit_Constraint_Redirect();
-        if (!$constraint->evaluate($response, 'assertRedirectTo', $this->_expected)) {
-            return false;
-        };
-        return true;
+        $actual = preg_replace('/(<style>.*?<\/style>)/', '', $actual);
+        $actual = preg_replace('/(<script>.*?<\/script>)/', '', $actual);
+        $actual = preg_replace('/(<head>.*?<\/head>)/', '', $actual);
+        $actual = strip_tags($actual);
+        if (strpos($actual, $this->_expected) !== false) {
+            return true;
+        }
+        return false;
     }
-
+    
     /**
      * Returns failure message in case we are using should
      * 
@@ -68,7 +73,8 @@ class Redirect implements Matcher
      */
     public function getFailureMessage()
     {
-        return 'expected to redirect, got no redirection (using redirect())';
+        return 'expected to contain ' . var_export($this->_expected, true) .
+               ', found no match (using contain())';
     }
 
     /**
@@ -78,7 +84,8 @@ class Redirect implements Matcher
      */
     public function getNegativeFailureMessage()
     {
-        return 'expected not to redirect, but redirected (using redirect())';
+        return 'expected not to contain' . var_export($this->_expected, true) .
+               ', but found a match (using contain())';
     }
 
     /**
@@ -88,6 +95,6 @@ class Redirect implements Matcher
      */
     public function getDescription()
     {
-        return 'redirect';
+        return 'contain';
     }
 }
