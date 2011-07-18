@@ -55,7 +55,9 @@ class Redirect implements Matcher
     public function matches($response)
     {
         $constraint = new \Zend_Test_PHPUnit_Constraint_Redirect();
-        if (!$constraint->evaluate($response, 'assertRedirectTo', $this->_expected)) {
+        if (!$constraint->evaluate(
+            $response, 'assertRedirectTo', $this->_expected
+        )) {
             return false;
         };
         return true;
