@@ -1,0 +1,42 @@
+<project name="PHPSpec_Zend">
+  
+  <property name="version" value="1.2" />
+  <property name="stability" value="beta" />
+  <property name="pear" value="pear" />
+  <property name="source" value="/md/dev/php/phpspec-zend" />
+
+  <target name="clean" description="Clean build">
+    <delete dir="${pear}" />
+  </target>
+
+  <target name="init" description="Create build directory" depends="clean">
+    <mkdir dir="${pear}" />
+    <copy toDir="${pear}" >
+      <fileset file="${source}/README.markdown" />
+      <fileset file="${source}/LICENSE" />
+    </copy>
+    
+    <mkdir dir="${pear}/PHPSpec" />
+    <copy toDir="${pear}/PHPSpec" >
+      <fileset dir="${source}/src/PHPSpec" />
+    </copy>
+  </target>
+  
+  <target name="code-sniffer" description="Check standards" depends="init">
+    <exec executable="phpcs" dir="${pear}/PHPSpec" failonerror="on">
+      <arg line="--standard=Zend --ignore=*Functions.php ." />
+    </exec>
+  </target>
+
+  <target name="pearify" description="Create the package.xml" depends="code-sniffer">
+    <exec executable="pearify-zend">
+      <arg line="${pear} ${version} ${stability}" />
+    </exec>
+  </target>
+
+  <target name="build" depends="pearify">
+    <exec executable="php" dir="${pear}">
+      <arg line="-d date.timezone=Europe/London /usr/share/pear/pearcmd.php package" />
+    </exec>
+  </target>
+</project>
