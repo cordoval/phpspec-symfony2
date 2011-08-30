@@ -11,6 +11,7 @@ Setup
 -----
 On deps file insert the follow friend entries:
 
+```ini
 [PHPSpec]
     git=https://github.com/phpspec/phpspec.git
     target=/phpspec
@@ -30,6 +31,7 @@ On deps file insert the follow friend entries:
 [hamcrest-php]
     git=https://github.com/cordoval/hamcrest-php.git
     target=/hamcrest-php
+```
 
 Usage
 -----
