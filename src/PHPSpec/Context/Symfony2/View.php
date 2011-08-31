@@ -25,6 +25,7 @@ namespace PHPSpec\Context\Symfony2;
 use \PHPSpec\Context,
     \PHPSpec\Util\Filter;
 
+use \Twig\lib\Twig\Template;
 /**
  * @category   PHPSpec
  * @package    PHPSpec_Zend
@@ -58,7 +59,9 @@ class View extends Context
                 $viewName = Filter::camelCaseToDash(substr($path[0], 8));
         }
 
-        $basePath = APPLICATION_PATH;
+        // define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application/'));
+        // The above is for Zend however for Symfony2 we have a different approach
+        $basePath = __DIR__; //APPLICATION_PATH;
         if ($moduleName) {
             $basePath .= '/modules/' . $moduleName;
         }
@@ -67,15 +70,15 @@ class View extends Context
 
         $basePath .= '/views/';
         if (!file_exists($basePath) || !is_dir($basePath)) {
-            require_once 'Zend/Controller/Exception.php';
-            throw new \Zend_Controller_Exception(
+            /*throw new \Zend_Controller_Exception(
                 'Missing base view directory ("' . $basePath . '")'
-            );
+            );*/
         }
-        require_once 'Zend/View.php';
-        $this->_view = new \Zend_View(array('basePath' => $basePath));
 
-        $this->_viewScript = $this->_controllerName . "/$viewName.phtml";
+        //$this->_view = null; //new \Zend_View(array('basePath' => $basePath));
+        $this->_view = \Twig_Template $this->container->get('templating');
+
+        $this->_viewScript = $this->_controllerName . "/$viewName.html.twig";
     }
 
     /**
