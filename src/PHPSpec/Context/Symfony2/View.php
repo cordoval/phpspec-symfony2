@@ -43,6 +43,7 @@ require_once __DIR__ . '/../../../../../../app/AppKernel.php';
 class View extends Context
 {
     private $templating;
+    public $rendered;
     
     /**
      * Creates the view context
@@ -97,7 +98,7 @@ class View extends Context
             throw new \LogicException('No templating engine set.');
         }
 
-        return $this->spec($this->templating->render($template, $templateContext));
+        $this->rendered = $this->spec($this->templating->render($template, $templateContext));
     }
 
 }

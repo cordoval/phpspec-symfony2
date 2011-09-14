@@ -57,7 +57,6 @@ class Contain implements Matcher
      */
     public function matches($actual)
     {
-        print_r($actual);
         $actual = preg_replace('/(<style>.*?<\/style>)/', '', $actual);
         $actual = preg_replace('/(<script>.*?<\/script>)/', '', $actual);
         $actual = preg_replace('/(<head>.*?<\/head>)/', '', $actual);
