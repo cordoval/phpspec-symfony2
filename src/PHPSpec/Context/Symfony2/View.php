@@ -22,10 +22,15 @@
  */
 namespace PHPSpec\Context\Symfony2;
 
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+
 use \PHPSpec\Context,
     \PHPSpec\Util\Filter;
 
-use \Twig\lib\Twig\Template;
+require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
+require_once __DIR__ . '/../../../../../../app/AppKernel.php';
+
+//vendor/phpspec-symfony2/src/PHPSpec/Context/Symfony2/
 /**
  * @category   PHPSpec
  * @package    PHPSpec_Zend
@@ -37,63 +42,34 @@ use \Twig\lib\Twig\Template;
  */
 class View extends Context
 {
-    public $rendered;
-    protected $_view;
-    protected $_viewScript;
-    protected $_controllerName;
-
+    private $templating;
+    
     /**
      * Creates the view context
      */
     public function __construct()
     {
-        $path = array_reverse(explode('\\', get_class($this)));
-        $moduleName = '';
-        $controllerName = 'index';
-        switch (count($path)) {
-            case 3:
-                $moduleName = Filter::camelCaseToDash($path[2]);
-            case 2:
-                $controllerName = Filter::camelCaseToDash($path[1]);
-            case 1:
-                $viewName = Filter::camelCaseToDash(substr($path[0], 8));
-        }
+        $kernel = new \AppKernel('dev', true);
+        $kernel->loadClassCache();
+        $kernel->init();
+        $kernel->boot();
+        $templatingService = $kernel->getContainer()->get('templating');
 
-        // define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application/'));
-        // The above is for Zend however for Symfony2 we have a different approach
-        $basePath = __DIR__; //APPLICATION_PATH;
-        if ($moduleName) {
-            $basePath .= '/modules/' . $moduleName;
-        }
-
-        $this->_controllerName = $controllerName;
-
-        $basePath .= '/views/';
-        if (!file_exists($basePath) || !is_dir($basePath)) {
-            /*throw new \Zend_Controller_Exception(
-                'Missing base view directory ("' . $basePath . '")'
-            );*/
-        }
-
-        //$this->_view = null; //new \Zend_View(array('basePath' => $basePath));
-        $this->_view = \Twig_Template $this->container->get('templating');
-
-        $this->_viewScript = $this->_controllerName . "/$viewName.html.twig";
+        // Some variables
+        $this->setTemplating($templatingService);
     }
 
     /**
-     * Assigns a value to a view variable
+     * sets template engine
      *
-     * @param string $var
-     * @param string $value
+     * @param EngineInterface
      */
-    public function assign($var, $value)
-    {
-        $this->_view->assign($var, $value);
+    public function setTemplating(EngineInterface $templating) {
+        $this->templating = $templating;
     }
 
-    /**
-     * Added Zend matchers to interceptor before returning it
+    /*
+     * Added Symfony matchers to interceptor before returning it
      *
      * @param mixed
      * @return \PHPSpec\Specification\Interceptor
@@ -103,9 +79,11 @@ class View extends Context
         $interceptor = call_user_func_array(
             array(
                 '\PHPSpec\Specification\Interceptor\InterceptorFactory',
-                'create'),
+                'create'
+            ),
             func_get_args()
         );
+
         $interceptor->addMatchers(array('contain', 'haveSelector'));
         return $interceptor;
     }
@@ -113,9 +91,13 @@ class View extends Context
     /**
      * Renders the view
      */
-    public function render()
+    public function render($template, array $templateContext = array())
     {
-        $this->rendered = $this->spec($this->_view->render($this->_viewScript));
+        if (is_null($this->templating)) {
+            throw new \LogicException('No templating engine set.');
+        }
+
+        return $this->spec($this->templating->render($template, $templateContext));
     }
 
 }
