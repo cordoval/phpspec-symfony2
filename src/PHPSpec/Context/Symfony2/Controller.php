@@ -200,4 +200,13 @@ class Controller extends Context
         }
         return $this->_symfonyTest;
     }
+
+    public function getContainer() {
+        return $this->_getSymfonyTest()->kernel->getContainer();
+    }
+
+    public function getClient() {
+        return $this->_getSymfonyTest()->client;
+    }
+
 }
