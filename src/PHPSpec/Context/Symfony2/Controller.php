@@ -171,11 +171,11 @@ class Controller extends Context
 
         $this->createClient()->request($type, $url)
             
-        $this->module = $this->spec($zendTest->request->getModuleName());
-        $this->controller = $this->spec($zendTest->request->getControllerName());
-        $this->action = $this->spec($zendTest->request->getActionName());
-        $this->response = $this->spec($zendTest->response);
-        $this->request = $this->spec($zendTest->request);
+        $this->bundle = $this->spec($symfonyTest->request->getBundleName());
+        $this->controller = $this->spec($symfonyTest->request->getControllerName());
+        $this->action = $this->spec($symfonyTest->request->getActionName());
+        $this->response = $this->spec($symfonyTest->response);
+        $this->request = $this->spec($symfonyTest->request);
     }
 
     /**
@@ -183,10 +183,19 @@ class Controller extends Context
      *
      * @return \PHPSpec\Context\Zend\ZendTest
      */
-    protected function _getZendTest()
+    protected function _getSymfonyTest()
     {
-        if ($this->_zendTest === null) {
-            $this->_zendTest = new ZendTest;
+        $kernel = new \AppKernel('dev', true);
+        $kernel->loadClassCache();
+        $kernel->init();
+        $kernel->boot();
+        $requestService = $kernel->getContainer()->get('request');
+
+        // Some variables
+        $this->setRequest($requestService);
+
+        if ($this->_symfonyTest === null) {
+            $this->_symfonyTest = new ZendTest;
         }
         return $this->_zendTest;
     }
