@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
  *                                     Luis Cordova
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public Licence Version 3
  */
-die(var_dump(get_include_path()));
+//die(var_dump(get_include_path()));
 class SymfonyTest extends WebTestCase
 {
     public $client;
