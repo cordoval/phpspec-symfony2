@@ -82,7 +82,7 @@ class Controller extends Context
      */
     public function post($url, array $params = array())
     {
-        $this->_getZendTest()->request->setMethod('POST')
+        $this->_getSymfonyTest()->request->setMethod('POST')
              ->setPost($params);
         $this->_dispatch($url);
 
@@ -97,7 +97,7 @@ class Controller extends Context
      */
     public function put($url, array $params = array())
     {
-        $this->_getZendTest()->request->setMethod('PUT')
+        $this->_getSymfonyTest()->request->setMethod('PUT')
              ->setPost($params);
         $this->_dispatch($url);
     }
@@ -110,7 +110,7 @@ class Controller extends Context
      */
     public function delete($url, array $params = array())
     {
-        $this->_getZendTest()->request->setMethod('DELETE')
+        $this->_getSymfonyTest()->request->setMethod('DELETE')
              ->setPost($params);
         $this->_dispatch($url);
     }
@@ -123,7 +123,7 @@ class Controller extends Context
      */
     public function head($url, array $params = array())
     {
-        $this->_getZendTest()->request->setMethod('HEAD')
+        $this->_getSymfonyTest()->request->setMethod('HEAD')
              ->setPost($params);
         $this->_dispatch($url);
     }
@@ -137,11 +137,11 @@ class Controller extends Context
      */
     public function routeFor(array $options)
     {
-        return $this->spec($this->_getZendTest()->url($options));
+        return $this->spec($this->_getSymfonyTest()->url($options));
     }
 
     /**
-     * Added Zend matchers to interceptor before returning it
+     * Adds Symfony matchers to interceptor before returning it
      *
      * @param mixed
      * @return \PHPSpec\Specification\Interceptor
@@ -160,16 +160,16 @@ class Controller extends Context
     }
 
     /**
-     * Dispatches from zend test and fetch results into local variables
+     * Dispatches from Symfony test and fetch results into local variables
      *
      * @param string $url
      */
     protected function _dispatch($url = null)
     {
-        $zendTest = $this->_getZendTest();
-        $zendTest->dispatch($url);
+        $symfonyTest = $this->_getSymfonyTest();
+        $symfonyTest->dispatch($url);
 
-        $this->createClient()->request($type, $url)
+        //$this->createClient()->request($type, $url)
             
         $this->bundle = $this->spec($symfonyTest->request->getBundleName());
         $this->controller = $this->spec($symfonyTest->request->getControllerName());
@@ -179,12 +179,13 @@ class Controller extends Context
     }
 
     /**
-     * Gets zend test base class
+     * Gets Symfony test base class
      *
-     * @return \PHPSpec\Context\Zend\ZendTest
+     * @return \PHPSpec\Context\Symfony2\SymfonyTest
      */
     protected function _getSymfonyTest()
     {
+        /*
         $kernel = new \AppKernel('dev', true);
         $kernel->loadClassCache();
         $kernel->init();
@@ -193,10 +194,10 @@ class Controller extends Context
 
         // Some variables
         $this->setRequest($requestService);
-
+        */
         if ($this->_symfonyTest === null) {
-            $this->_symfonyTest = new ZendTest;
+            $this->_symfonyTest = new SymfonyTest();
         }
-        return $this->_zendTest;
+        return $this->_symfonyTest;
     }
 }

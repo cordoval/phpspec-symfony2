@@ -2,7 +2,10 @@
 
 namespace PHPSpec\Context\Symfony2;
 
-use \Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
+require_once __DIR__ . '/../../../../../../app/AppKernel.php';
 
 /**
  * @category   PHPSpec
@@ -15,13 +18,13 @@ use \Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class SymfonyTest extends WebTestCase
 {
-    public $bootstrap;
+    public $client;
     
     /**
      * Creates a Symfony test client object into the bootstrap property
      */
     public function __construct()
     {
-        $this->bootstrap = $this->createClient();
+        $this->client = $this->createClient();
     }
 }
