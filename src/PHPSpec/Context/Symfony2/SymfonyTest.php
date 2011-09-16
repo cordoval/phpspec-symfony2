@@ -20,13 +20,16 @@ require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
 class SymfonyTest extends WebTestCase
 {
     public $client;
+    public $kernel1;
+    public $container1;
     
     /**
      * Creates a Symfony test client object into the bootstrap property
      */
-    public function __construct()
+    public function init()
     {
-        $this->client = $this->createClient();
-
+        $this->client = static::createClient();
+        $this->kernel1 = $this->client->getKernel();
+        $this->container1 = $this->client->getContainer();
     }
 }

@@ -197,16 +197,17 @@ class Controller extends Context
         */
         if ($this->_symfonyTest === null) {
             $this->_symfonyTest = new SymfonyTest();
+            $this->_symfonyTest->init();
         }
         return $this->_symfonyTest;
     }
 
     public function getContainer() {
-        return $this->_getSymfonyTest()->kernel->getContainer();
+        return $this->_getSymfonyTest()->container1;
     }
 
     public function getClient() {
-        return $this->_getSymfonyTest()->client;
+        return $this->_symfonyTest->client;
     }
 
 }
