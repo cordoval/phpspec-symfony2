@@ -199,6 +199,7 @@ class Controller extends Context
             $this->_symfonyTest = new SymfonyTest();
             $this->_symfonyTest->init();
         }
+
         return $this->_symfonyTest;
     }
 
