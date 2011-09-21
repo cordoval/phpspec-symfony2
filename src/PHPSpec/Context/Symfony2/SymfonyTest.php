@@ -4,7 +4,7 @@ namespace PHPSpec\Context\Symfony2;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
+//require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
 //require_once __DIR__ . '/../../../../../../app/AppKernel.php';
 
 /**
@@ -28,8 +28,46 @@ class SymfonyTest extends WebTestCase
      */
     public function init()
     {
-        $this->client = static::createClient();
+        //$kernelDir = __DIR__ . '/../../../../../../app';
+        //$this->client = static::createClient(array('test', true), array('KERNEL_DIR' => $kernelDir));
+        $this->client = static::createClient(array('test', true));
         $this->kernel1 = $this->client->getKernel();
         $this->container1 = $this->client->getContainer();
     }
+
+    /**
+     * Finds the directory where the phpunit.xml(.dist) is stored.
+     *
+     * If you run tests with the PHPUnit CLI tool, everything will work as expected.
+     * If not, override this method in your test classes.
+     *
+     * @return string The directory where phpunit.xml(.dist) is stored
+     */
+    static protected function getPhpUnitXmlDir()
+    {
+        if (!isset($_SERVER['argv']) || false === strpos($_SERVER['argv'][0], 'phpunit')) {
+            //throw new \RuntimeException('You must override the WebTestCase::createKernel() method.');
+        }
+
+        $kernelDir = __DIR__ . '/../../../../../../app';
+        
+        $dir = $kernelDir; //static::getPhpUnitCliConfigArgument();
+        if ($dir === null &&
+            (is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml') ||
+            is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml.dist'))) {
+            $dir = getcwd();
+        }
+
+        // Can't continue
+        if ($dir === null) {
+            throw new \RuntimeException('Unable to guess the Kernel directory.');
+        }
+
+        if (!is_dir($dir)) {
+            $dir = dirname($dir);
+        }
+
+        return $dir;
+    }
+
 }
