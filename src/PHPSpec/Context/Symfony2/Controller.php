@@ -129,15 +129,15 @@ class Controller extends Context
     }
 
     /**
-     * Gets the route url for a given set of route options
-     * (module, controller, action)
+     * Gets (bundle, controller, action)
+     * for the route url given
      *
-     * @param array $options
+     * @param string $url
      * @return \PHPSpec\Specification\Interceptor
      */
-    public function routeFor(array $options)
+    public function matchFor(string $url)
     {
-        return $this->spec($this->_getSymfonyTest()->url($options));
+        return $this->spec($this->_getSymfonyTest()->getClient()->go($url));
     }
 
     /**
